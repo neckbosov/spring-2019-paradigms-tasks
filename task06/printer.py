@@ -52,19 +52,22 @@ class PrettyPrinter(model.ASTNodeVisitor):
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
         result += ', '.join(function_definition.func.args) + ') {\n'
-        result += '\n'.join(statement.accept(self)
-                            for statement in function_definition.func.body)
+        for statement in function_definition.func.body:
+            lines = statement.accept(self).split('\n')
+            result += '\n'.join(' ' * 4 + line for line in lines)
         return result + '}'
 
     def visit_conditional(self, condition):
         result = 'if (' + condition.accept(self.expression_printer) + ') {\n'
-        result += ';\n'.join(statement.accept(self)
-                             for statement in condition.if_true)
+        for statement in condition.if_true:
+            lines = statement.accept(self).split('\n')
+            result += '\n'.join(' ' * 4 + line for line in lines)
         result += '}'
         if condition.if_false:
             result += ' else {\n'
-            result += '\n'.join(statement.accept(self)
-                                for statement in condition.if_false)
+            for statement in condition.if_false:
+                lines = statement.accept(self).split('\n')
+                result += '\n'.join(' ' * 4 + line for line in lines)
             result += '}'
         return result
 
