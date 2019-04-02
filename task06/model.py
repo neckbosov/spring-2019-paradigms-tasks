@@ -25,10 +25,6 @@ class ASTNodeVisitor(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def visit_function(self, function):
-        pass
-
-    @abc.abstractmethod
     def visit_function_definition(self, function_definition):
         pass
 
