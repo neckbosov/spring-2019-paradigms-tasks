@@ -51,7 +51,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
 
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
-        result += ', '.join(function_definition.func.args) + ') {\n'
+        result += ', '.join(function_definition.func.arg_names) + ') {\n'
         for statement in function_definition.func.body:
             lines = statement.accept(self).split('\n')
             result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
