@@ -89,3 +89,8 @@ class PrettyPrinter(model.ASTNodeVisitor):
 
     def visit_unary_operation(self, unary_operation):
         return unary_operation.accept(self.expression_printer) + ';'
+
+
+def pretty_print(program):
+    printer = PrettyPrinter()
+    print(program.accept(printer))
