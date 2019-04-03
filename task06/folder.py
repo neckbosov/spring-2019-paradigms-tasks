@@ -50,7 +50,7 @@ class ConstantFolder(model.ASTNodeVisitor):
             return model.Number(0)
         elif op == '*' and (
                 isinstance(lhs, model.Number) and lhs.value == 0 or
-                isinstance(lhs, model.Number) and lhs.value == 0):
+                isinstance(rhs, model.Number) and rhs.value == 0):
             return model.Number(0)
         else:
             return model.BinaryOperation(op, lhs, rhs)
