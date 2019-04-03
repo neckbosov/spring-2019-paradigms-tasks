@@ -63,3 +63,7 @@ class ConstantFolder(model.ASTNodeVisitor):
             return unary_operation.operations[unary_operation.op](val)
         else:
             return model.UnaryOperation(unary_operation.op, val)
+
+
+def fold_constants(program):
+    return program.accept(ConstantFolder())
