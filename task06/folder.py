@@ -41,15 +41,15 @@ class ConstantFolder(model.ASTNodeVisitor):
         lhs = binary_operation.left.accept(self)
         rhs = binary_operation.right.accept(self)
         op = binary_operation.op
-        if isinstance(model.Number, lhs) and isinstance(model.Number, rhs):
+        if isinstance(lhs, model.Number) and isinstance(rhs, model.Number):
             return binary_operation.operations[op](lhs, rhs)
         elif isinstance(model.Reference, lhs)\
             and isinstance(model.Reference(rhs))\
                 and op == '-' and lhs.var_name == rhs.var_name:
             return model.Number(0)
         elif op == '*' and (
-                isinstance(model.Number, lhs) and lhs.value == 0 or
-                isinstance(model.Number, lhs) and lhs.value == 0):
+                isinstance(lhs, model.Number) and lhs.value == 0 or
+                isinstance(lhs, model.Number) and lhs.value == 0):
             return model.Number(0)
         else:
             return model.BinaryOperation(op, lhs, rhs)
@@ -59,7 +59,7 @@ class ConstantFolder(model.ASTNodeVisitor):
 
     def visit_unary_operation(self, unary_operation):
         val = unary_operation.expr.accept(self)
-        if isinstance(model.Number, val):
+        if isinstance(val, model.Number):
             return unary_operation.operations[unary_operation.op](val)
         else:
             return model.UnaryOperation(unary_operation.op, val)
