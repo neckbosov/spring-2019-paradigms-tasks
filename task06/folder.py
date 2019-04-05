@@ -17,8 +17,7 @@ class ConstantFolder(model.ASTNodeVisitor):
             function_definition.name,
             model.Function(
                 function_definition.func.arg_names,
-                [statement.accept(self)
-                 for statement in function_definition.func.body]
+                function_definition.func.accept(self)
             )
         )
 
@@ -65,6 +64,12 @@ class ConstantFolder(model.ASTNodeVisitor):
                 unary_operation.operations[unary_operation.op](val.value))
         else:
             return model.UnaryOperation(unary_operation.op, val)
+
+    def visit_function(self, function):
+        return model.Function(
+            function.arg_names,
+            [statement.accept(self) for statement in function.body]
+        )
 
 
 def fold_constants(program):

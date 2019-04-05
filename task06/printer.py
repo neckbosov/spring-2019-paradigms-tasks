@@ -8,6 +8,10 @@ class ExpressionPrinter(model.ASTNodeVisitor):
     def visit_number(self, number):
         return str(number.value)
 
+    def visit_function(self, function):
+        raise NotImplementedError(
+            'Functions are not allowed in statement')
+
     def visit_function_definition(self, function_definition):
         raise NotImplementedError(
             'Function definition are not allowed in statement')
@@ -48,6 +52,9 @@ class PrettyPrinter(model.ASTNodeVisitor):
 
     def visit_number(self, number):
         return str(number.value) + ';'
+
+    def visit_function(self, function):
+        pass
 
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
