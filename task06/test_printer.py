@@ -21,6 +21,17 @@ def test_conditional_printer():
     assert condition.accept(pretty_printer) == result
 
 
+def test_conditional_if_true_none():
+    pretty_printer = printer.PrettyPrinter()
+    condition = model.Conditional(
+        model.Number(42),
+        None,
+        [model.Print(model.Number(0))]
+    )
+    result = 'if (42) {\n    print 1;\n} else {\n    print 0;\n}'
+    assert condition.accept(pretty_printer) == result
+
+
 def test_function_definition_printer_empty():
     pretty_printer = printer.PrettyPrinter()
     result = 'def foo() {\n}'
