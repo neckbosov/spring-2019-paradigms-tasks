@@ -56,7 +56,8 @@ class ConstantFolder(model.ASTNodeVisitor):
     def visit_unary_operation(self, unary_operation):
         val = unary_operation.expr.accept(self)
         if isinstance(val, model.Number):
-            return model.UnaryOperation(op, val).evaluate(model.Scope())
+            return model.UnaryOperation(
+                unary_operation.op, val).evaluate(model.Scope())
         else:
             return model.UnaryOperation(unary_operation.op, val)
 
