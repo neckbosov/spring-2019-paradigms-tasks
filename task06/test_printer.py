@@ -28,7 +28,7 @@ def test_conditional_if_true_none():
         None,
         [model.Print(model.Number(0))]
     )
-    result = 'if (42) {\n    print 1;\n} else {\n    print 0;\n}'
+    result = 'if (42) {\n} else {\n    print 0;\n}'
     assert condition.accept(pretty_printer) == result
 
 
