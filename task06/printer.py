@@ -60,7 +60,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         result = 'def ' + function_definition.name + '('
         result += ', '.join(function_definition.func.arg_names) + ') {\n'
         for statement in function_definition.func.body:
-            lines = statement.accept(self).split('\n')
+            lines = statement.accept(self).splitlines()
             result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
         return result + '}'
 
@@ -68,13 +68,13 @@ class PrettyPrinter(model.ASTNodeVisitor):
         result = 'if (' + \
             condition.condition.accept(self.expression_printer) + ') {\n'
         for statement in condition.if_true:
-            lines = statement.accept(self).split('\n')
+            lines = statement.accept(self).splitlines()
             result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
         result += '}'
         if condition.if_false:
             result += ' else {\n'
             for statement in condition.if_false:
-                lines = statement.accept(self).split('\n')
+                lines = statement.accept(self).splitlines()
                 result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
             result += '}'
         return result
