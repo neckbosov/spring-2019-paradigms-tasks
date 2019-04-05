@@ -4,7 +4,7 @@ import printer
 
 
 def syntax_tree_equals(tree1, tree2):
-    if not isinstance(tree1, type(tree2)):
+    if type(tree1) != type(tree2):
         return False
     if isinstance(tree1, model.Number):
         return tree1.value == tree2.value
