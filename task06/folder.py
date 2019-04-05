@@ -39,9 +39,9 @@ class ConstantFolder(model.ASTNodeVisitor):
         op = binary_operation.op
         if isinstance(lhs, model.Number) and isinstance(rhs, model.Number):
             return model.BinaryOperation(lhs, op, rhs).evaluate(model.Scope())
-        elif isinstance(lhs, model.Reference)\
-            and isinstance(rhs, model.Reference)\
-                and op == '-' and lhs.var_name == rhs.var_name:
+        elif (isinstance(lhs, model.Reference)
+              and isinstance(rhs, model.Reference)
+                and op == '-' and lhs.var_name == rhs.var_name):
             return model.Number(0)
         elif op == '*' and (
                 isinstance(lhs, model.Number) and lhs.value == 0 or
