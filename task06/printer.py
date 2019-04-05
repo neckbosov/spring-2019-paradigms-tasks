@@ -67,7 +67,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
     def visit_conditional(self, condition):
         result = 'if (' + \
             condition.condition.accept(self.expression_printer) + ') {\n'
-        for statement in condition.if_true:
+        for statement in condition.if_true or []:
             lines = statement.accept(self).splitlines()
             result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
         result += '}'
