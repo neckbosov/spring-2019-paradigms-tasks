@@ -5,8 +5,8 @@ class ConstantFolder(model.ASTNodeVisitor):
     def visit_conditional(self, condition):
         return model.Conditional(
             condition.condition.accept(self),
-            [statement.accept(self) for statement in condition.if_true],
-            [statement.accept(self) for statement in condition.if_false],
+            [statement.accept(self) for statement in condition.if_true or []],
+            [statement.accept(self) for statement in condition.if_false or []],
         )
 
     def visit_function_definition(self, function_definition):
