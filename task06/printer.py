@@ -9,23 +9,23 @@ class ExpressionPrinter(model.ASTNodeVisitor):
         return str(number.value)
 
     def visit_function(self, function):
-        raise NotImplementedError(
+        raise TypeError(
             'Functions are not allowed in statement')
 
     def visit_function_definition(self, function_definition):
-        raise NotImplementedError(
+        raise TypeError(
             'Function definition are not allowed in statement')
 
     def visit_conditional(self, condition):
-        raise NotImplementedError(
+        raise TypeError(
             'Conditional are not allowed in statement')
 
     def visit_print(self, print_object):
-        raise NotImplementedError(
+        raise TypeError(
             'Print are not allowed in statement')
 
     def visit_read(self, read_object):
-        raise NotImplementedError(
+        raise TypeError(
             'Read are not allowed in statement')
 
     def visit_function_call(self, function_call):
@@ -54,7 +54,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         return str(number.value) + ';'
 
     def visit_function(self, function):
-        pass
+        raise TypeError("Functions not allowed in printer")
 
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
