@@ -2,9 +2,6 @@ import model
 
 
 class ConstantFolder(model.ASTNodeVisitor):
-    def __init__(self):
-        pass
-
     def visit_conditional(self, condition):
         return model.Conditional(
             condition.condition.accept(self),
