@@ -45,7 +45,7 @@ class ConstantFolder(model.ASTNodeVisitor):
                 isinstance(rhs, model.Number) and rhs.value == 0):
             return model.Number(0)
         else:
-            return model.BinaryOperation(op, lhs, rhs)
+            return model.BinaryOperation(lhs, op, rhs)
 
     def visit_number(self, number):
         return number
