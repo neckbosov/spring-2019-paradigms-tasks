@@ -1,6 +1,14 @@
 import model
 
 
+def indent_statements(statements, printer):
+    from textwrap import indent
+    result = ''
+    for statement in statements or []:
+        result += indent(statement.accept(printer), '    ') + '\n'
+    return result
+
+
 class ExpressionPrinter(model.ASTNodeVisitor):
     def __init__(self):
         pass
@@ -59,23 +67,17 @@ class PrettyPrinter(model.ASTNodeVisitor):
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
         result += ', '.join(function_definition.func.arg_names) + ') {\n'
-        for statement in function_definition.func.body:
-            lines = statement.accept(self).splitlines()
-            result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
+        result += indent_statements(function_definition.func.body, self)
         return result + '}'
 
     def visit_conditional(self, condition):
         result = 'if (' + \
             condition.condition.accept(self.expression_printer) + ') {\n'
-        for statement in condition.if_true or []:
-            lines = statement.accept(self).splitlines()
-            result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
+        result += indent_statements(condition.if_true, self)
         result += '}'
         if condition.if_false:
             result += ' else {\n'
-            for statement in condition.if_false:
-                lines = statement.accept(self).splitlines()
-                result += '\n'.join(' ' * 4 + line for line in lines) + '\n'
+            result += indent_statements(condition.if_false, self)
             result += '}'
         return result
 
