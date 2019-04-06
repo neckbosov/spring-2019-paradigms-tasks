@@ -2,6 +2,15 @@ import model
 
 
 class ConstantFolder(model.ASTNodeVisitor):
+    def visit_number(self, number):
+        return number
+
+    def visit_function(self, function):
+        return model.Function(
+            function.arg_names,
+            [statement.accept(self) for statement in function.body]
+        )
+
     def visit_conditional(self, condition):
         return model.Conditional(
             condition.condition.accept(self),
@@ -49,9 +58,6 @@ class ConstantFolder(model.ASTNodeVisitor):
         else:
             return model.BinaryOperation(lhs, op, rhs)
 
-    def visit_number(self, number):
-        return number
-
     def visit_unary_operation(self, unary_operation):
         val = unary_operation.expr.accept(self)
         if isinstance(val, model.Number):
@@ -59,12 +65,6 @@ class ConstantFolder(model.ASTNodeVisitor):
                 unary_operation.op, val).evaluate(model.Scope())
         else:
             return model.UnaryOperation(unary_operation.op, val)
-
-    def visit_function(self, function):
-        return model.Function(
-            function.arg_names,
-            [statement.accept(self) for statement in function.body]
-        )
 
 
 def fold_constants(program):

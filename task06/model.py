@@ -25,6 +25,10 @@ class ASTNodeVisitor(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def visit_function(self, function):
+        pass
+
+    @abc.abstractmethod
     def visit_function_definition(self, function_definition):
         pass
 
@@ -54,10 +58,6 @@ class ASTNodeVisitor(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def visit_unary_operation(self, unary_operation):
-        pass
-
-    @abc.abstractmethod
-    def visit_function(self, function):
         pass
 
 
