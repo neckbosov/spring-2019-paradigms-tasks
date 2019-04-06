@@ -51,7 +51,7 @@ def test_number_binary_operation_folder():
         '<',
         model.Number(3)
     ).accept(folder.ConstantFolder())
-    assert operation.accept(folder.ConstantFolder()) == model.Number(1)
+    assert operation == model.Number(1)
 
 
 def test_multiplication_by_zero_folder():
