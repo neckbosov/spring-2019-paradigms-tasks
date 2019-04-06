@@ -45,13 +45,13 @@ class ExpressionPrinter(model.ASTNodeVisitor):
         return reference.var_name
 
     def visit_binary_operation(self, binary_operation):
-        return '(' + binary_operation.left.accept(self) + \
-            ') ' + binary_operation.op + \
-            ' (' + binary_operation.right.accept(self) + ')'
+        return ('(' + binary_operation.left.accept(self) + 
+            ') ' + binary_operation.op + 
+            ' (' + binary_operation.right.accept(self) + ')')
 
     def visit_unary_operation(self, unary_operation):
-        return unary_operation.op + \
-            '(' + unary_operation.expr.accept(self) + ')'
+        return (unary_operation.op + 
+            '(' + unary_operation.expr.accept(self) + ')')
 
 
 class PrettyPrinter(model.ASTNodeVisitor):
