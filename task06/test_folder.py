@@ -3,44 +3,6 @@ import model
 import printer
 
 
-def syntax_tree_equals(tree1, tree2):
-    if not isinstance(tree1, type(tree2)):
-        return False
-    if isinstance(tree1, model.Number):
-        return tree1.value == tree2.value
-    elif isinstance(tree1, model.Reference):
-        return tree1.var_name == tree2.var_name
-    elif isinstance(tree1, model.UnaryOperation):
-        return tree1.op == tree2.op and syntax_tree_equals(
-            tree1.expr, tree2.expr)
-    elif isinstance(tree1, model.BinaryOperation):
-        return tree1.op == tree2.op and\
-            syntax_tree_equals(tree1.left, tree2.left) and\
-            syntax_tree_equals(tree1.right, tree2.right)
-    elif isinstance(tree1, model.Function):
-        return tree1.arg_names == tree2.arg_names and\
-            len(tree1.body) == len(tree2.body) and\
-            all(syntax_tree_equals(st1, st2)
-                for st1, st2 in zip(tree1.body, tree2.body))
-    elif isinstance(tree1, model.FunctionDefinition):
-        return tree1.name == tree2.name and syntax_tree_equals(
-            tree1.func, tree2.func)
-    elif isinstance(tree1, model.Conditional):
-        return syntax_tree_equals(tree1.condition, tree2.condition) and\
-            all(syntax_tree_equals(st1, st2)
-                for st1, st2 in zip(tree1.if_true, tree2.if_true)) and\
-            all(syntax_tree_equals(st1, st2)
-                for st1, st2 in zip(tree1.if_false, tree2.if_false))
-    elif isinstance(tree1, model.Print):
-        return syntax_tree_equals(tree1.expr, tree2.expr)
-    elif isinstance(tree1, model.Read):
-        return tree1.var_name == tree2.var_name
-    elif isinstance(tree1, model.FunctionCall):
-        return syntax_tree_equals(tree1.fun_expr, tree2.fun_expr) and\
-            all(syntax_tree_equals(st1, st2)
-                for st1, st2 in zip(tree1.args, tree2.args))
-
-
 def test_number_binary_operation_folder():
     operation = model.BinaryOperation(
         model.BinaryOperation(
@@ -60,10 +22,11 @@ def test_number_binary_operation_folder_nothing():
         '+',
         model.Reference('b')
     )
-    assert syntax_tree_equals(
-        operation.accept(
-            folder.ConstantFolder()),
-        operation)
+    new_op = operation.accept(folder.ConstantFolder())
+    assert (isinstance(new_op, model.BinaryOperation) and
+            new_op.op == operation.op and
+            isinstance(new_op.left, model.Reference) and new_op.left.var_name == 'a' and
+            isinstance(new_op.right, model.Reference) and new_op.right.var_name == 'b')
 
 
 def test_multiplication_by_zero_folder():
