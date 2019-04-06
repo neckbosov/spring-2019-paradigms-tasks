@@ -12,10 +12,7 @@ class ConstantFolder(model.ASTNodeVisitor):
     def visit_function_definition(self, function_definition):
         return model.FunctionDefinition(
             function_definition.name,
-            model.Function(
-                function_definition.func.arg_names,
-                function_definition.func.accept(self)
-            )
+            function_definition.func.accept(self)
         )
 
     def visit_print(self, print_object):
