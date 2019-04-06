@@ -1,4 +1,5 @@
 import model
+from textwrap import indent
 
 
 class ExpressionPrinter(model.ASTNodeVisitor):
@@ -48,7 +49,6 @@ class PrettyPrinter(model.ASTNodeVisitor):
         self.expression_printer = ExpressionPrinter()
 
     def indent_statements(self, statements):
-        from textwrap import indent
         result = ''
         for statement in statements or []:
             result += indent(statement.accept(self), '    ') + '\n'
