@@ -25,8 +25,10 @@ def test_number_binary_operation_folder_nothing():
     new_op = operation.accept(folder.ConstantFolder())
     assert (isinstance(new_op, model.BinaryOperation) and
             new_op.op == operation.op and
-            isinstance(new_op.left, model.Reference) and new_op.left.var_name == 'a' and
-            isinstance(new_op.right, model.Reference) and new_op.right.var_name == 'b')
+            isinstance(new_op.left, model.Reference) and
+            new_op.left.var_name == 'a' and
+            isinstance(new_op.right, model.Reference) and
+            new_op.right.var_name == 'b')
 
 
 def test_multiplication_by_zero_folder():
