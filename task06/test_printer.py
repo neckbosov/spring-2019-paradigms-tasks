@@ -4,8 +4,8 @@ import model
 
 def test_conditional_printer_empty():
     pretty_printer = printer.PrettyPrinter()
-    result = """if (42) {
-}"""
+    result = '''if (42) {
+}'''
     assert model.Conditional(model.Number(42),
                              [], []).accept(pretty_printer) == result
 
@@ -122,7 +122,7 @@ def test_pretty_print(capsys):
     printer.pretty_print(func_def)
     out, err = capsys.readouterr()
     assert not err
-    assert out == """def main(arg1) {
+    assert out == '''def main(arg1) {
     read x;
     print x;
     if ((2) == (3)) {
@@ -132,4 +132,4 @@ def test_pretty_print(capsys):
         exit(-(arg1));
     }
 }
-"""
+'''
