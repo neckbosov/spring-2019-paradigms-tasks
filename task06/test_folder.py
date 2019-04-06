@@ -4,7 +4,7 @@ import printer
 
 
 def syntax_tree_equals(tree1, tree2):
-    if type(tree1) != type(tree2):
+    if not isinstance(tree1, type(tree2)):
         return False
     if isinstance(tree1, model.Number):
         return tree1.value == tree2.value
@@ -52,6 +52,18 @@ def test_number_binary_operation_folder():
         model.Number(3)
     ).accept(folder.ConstantFolder())
     assert operation == model.Number(1)
+
+
+def test_number_binary_operation_folder_nothing():
+    operation = model.BinaryOperation(
+        model.Reference('a'),
+        '+',
+        model.Reference('b')
+    )
+    assert syntax_tree_equals(
+        operation.accept(
+            folder.ConstantFolder()),
+        operation)
 
 
 def test_multiplication_by_zero_folder():
