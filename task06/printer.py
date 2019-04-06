@@ -18,23 +18,23 @@ class ExpressionPrinter(model.ASTNodeVisitor):
 
     def visit_function(self, function):
         raise TypeError(
-            'Functions are not allowed in statement')
+            'Functions are not allowed in expression')
 
     def visit_function_definition(self, function_definition):
         raise TypeError(
-            'Function definition are not allowed in statement')
+            'Function definition are not allowed in expression')
 
     def visit_conditional(self, condition):
         raise TypeError(
-            'Conditional are not allowed in statement')
+            'Conditional are not allowed in expression')
 
     def visit_print(self, print_object):
         raise TypeError(
-            'Print are not allowed in statement')
+            'Print are not allowed in expression')
 
     def visit_read(self, read_object):
         raise TypeError(
-            'Read are not allowed in statement')
+            'Read are not allowed in expression')
 
     def visit_function_call(self, function_call):
         result = function_call.fun_expr.accept(self) + '('
