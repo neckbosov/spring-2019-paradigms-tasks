@@ -67,8 +67,9 @@ class PrettyPrinter(model.ASTNodeVisitor):
         return result + '}'
 
     def visit_conditional(self, condition):
-        result = 'if (' + \
-            condition.condition.accept(self.expression_printer) + ') {\n'
+        result = ('if (' +
+                  condition.condition.accept(self.expression_printer) +
+                  ') {\n')
         result += self.indent_statements(condition.if_true)
         result += '}'
         if condition.if_false:
