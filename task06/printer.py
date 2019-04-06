@@ -1,18 +1,7 @@
 import model
 
 
-def indent_statements(statements, printer):
-    from textwrap import indent
-    result = ''
-    for statement in statements or []:
-        result += indent(statement.accept(printer), '    ') + '\n'
-    return result
-
-
 class ExpressionPrinter(model.ASTNodeVisitor):
-    def __init__(self):
-        pass
-
     def visit_number(self, number):
         return str(number.value)
 
@@ -58,6 +47,13 @@ class PrettyPrinter(model.ASTNodeVisitor):
     def __init__(self):
         self.expression_printer = ExpressionPrinter()
 
+    def indent_statements(self, statements):
+        from textwrap import indent
+        result = ''
+        for statement in statements or []:
+            result += indent(statement.accept(self), '    ') + '\n'
+        return result
+
     def visit_number(self, number):
         return str(number.value) + ';'
 
@@ -67,17 +63,17 @@ class PrettyPrinter(model.ASTNodeVisitor):
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
         result += ', '.join(function_definition.func.arg_names) + ') {\n'
-        result += indent_statements(function_definition.func.body, self)
+        result += self.indent_statements(function_definition.func.body)
         return result + '}'
 
     def visit_conditional(self, condition):
         result = 'if (' + \
             condition.condition.accept(self.expression_printer) + ') {\n'
-        result += indent_statements(condition.if_true, self)
+        result += self.indent_statements(condition.if_true)
         result += '}'
         if condition.if_false:
             result += ' else {\n'
-            result += indent_statements(condition.if_false, self)
+            result += self.indent_statements(condition.if_false)
             result += '}'
         return result
 
