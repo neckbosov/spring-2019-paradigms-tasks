@@ -60,8 +60,12 @@ def test_function_definition_printer():
         ]
     )
     func_def = model.FunctionDefinition('foo', function)
-    result = 'def foo(a, b) {\n    print a;\n    print b;\n}'
-    assert func_def.accept(pretty_printer) == result
+    expected = '''\
+        def foo(a, b) {
+            print a;
+            print b;
+        }'''
+    assert func_def.accept(pretty_printer) == textwrap.dedent(expected)
 
 
 def test_print_printer():
