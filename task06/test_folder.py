@@ -16,7 +16,7 @@ def test_number_binary_operation():
     assert operation == model.Number(1)
 
 
-def test_number_binary_operation_nothing():
+def test_number_binary_operation_noop():
     operation = model.BinaryOperation(
         model.Reference('a'),
         '+',
@@ -46,7 +46,7 @@ def test_multiplication_by_zero():
     assert operation == model.Number(0)
 
 
-def test_itself_substraction():
+def test_ref_subtract_ref_same_name():
     operation = model.BinaryOperation(
         model.Reference('kek'),
         '-',
