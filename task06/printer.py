@@ -27,9 +27,9 @@ class ExpressionPrinter(model.ASTNodeVisitor):
             'Read are not allowed in expression')
 
     def visit_function_call(self, function_call):
-        result = function_call.fun_expr.accept(self) + '('
-        result += ', '.join(arg.accept(self) for arg in function_call.args)
-        return result + ')'
+        return (function_call.fun_expr.accept(self) + '(' +
+                ', '.join(arg.accept(self) for arg in function_call.args) +
+                ')')
 
     def visit_reference(self, reference):
         return reference.var_name
