@@ -89,7 +89,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         return function_call.accept(self.expression_printer) + ';'
 
     def visit_reference(self, reference):
-        return reference.var_name + ';'
+        return reference.accept(self.expression_printer) + ';'
 
     def visit_binary_operation(self, binary_operation):
         return binary_operation.accept(self.expression_printer) + ';'
