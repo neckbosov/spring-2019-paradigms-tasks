@@ -38,6 +38,12 @@ def test_multiplication_by_zero_folder():
         model.Number(0)
     ).accept(folder.ConstantFolder())
     assert operation == model.Number(0)
+    operation = model.BinaryOperation(
+        model.Number(0),
+        '*',
+        model.Reference('kek')
+    ).accept(folder.ConstantFolder())
+    assert operation == model.Number(0)
 
 
 def test_itself_substraction_folder():
