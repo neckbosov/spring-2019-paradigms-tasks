@@ -8,9 +8,8 @@ def test_conditional_printer_empty():
     expected = '''\
         if (42) {
         }'''
-    assert textwrap.dedent(
-        model.Conditional(model.Number(42), [], []).accept(pretty_printer)
-    ) == textwrap.dedent(expected)
+    assert (model.Conditional(model.Number(42), [], []).accept(pretty_printer)
+            == textwrap.dedent(expected))
 
 
 def test_conditional_printer():
@@ -26,8 +25,7 @@ def test_conditional_printer():
         } else {
             print 0;
         }'''
-    assert textwrap.dedent(condition.accept(
-        pretty_printer)) == textwrap.dedent(expected)
+    assert condition.accept(pretty_printer) == textwrap.dedent(expected)
 
 
 def test_conditional_if_true_none():
@@ -42,8 +40,7 @@ def test_conditional_if_true_none():
         } else {
             print 0;
         }'''
-    assert textwrap.dedent(condition.accept(
-        pretty_printer)) == textwrap.dedent(expected)
+    assert condition.accept(pretty_printer) == textwrap.dedent(expected)
 
 
 def test_function_definition_printer_empty():
@@ -148,4 +145,4 @@ def test_pretty_print(capsys):
             }
         }
     '''
-    assert textwrap.dedent(out) == textwrap.dedent(expected)
+    assert out == textwrap.dedent(expected)
