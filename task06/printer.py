@@ -8,11 +8,11 @@ class ExpressionPrinter(model.ASTNodeVisitor):
 
     def visit_function(self, function):
         raise TypeError(
-            'Functions are not allowed in expression')
+            'Function are not allowed in expression')
 
     def visit_function_definition(self, function_definition):
         raise TypeError(
-            'Function definition are not allowed in expression')
+            'FunctionDefinition definition are not allowed in expression')
 
     def visit_conditional(self, condition):
         raise TypeError(
