@@ -58,7 +58,7 @@ class PrettyPrinter(model.ASTNodeVisitor):
         return number.accept(self.expression_printer) + ';'
 
     def visit_function(self, function):
-        raise TypeError("Functions not allowed in printer")
+        raise TypeError('Functions not allowed in printer')
 
     def visit_function_definition(self, function_definition):
         result = 'def ' + function_definition.name + '('
