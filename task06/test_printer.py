@@ -3,7 +3,12 @@ import model
 import textwrap
 
 
-def test_conditional_printer_empty():
+def test_number():
+    pretty_printer = printer.PrettyPrinter()
+    assert model.Number(10).accept(pretty_printer) == '10;'
+
+
+def test_conditional_empty():
     pretty_printer = printer.PrettyPrinter()
     expected = '''\
         if (42) {
@@ -12,7 +17,7 @@ def test_conditional_printer_empty():
             == textwrap.dedent(expected))
 
 
-def test_conditional_printer():
+def test_conditional():
     pretty_printer = printer.PrettyPrinter()
     condition = model.Conditional(
         model.Number(42),
@@ -43,14 +48,14 @@ def test_conditional_if_true_none():
     assert condition.accept(pretty_printer) == textwrap.dedent(expected)
 
 
-def test_function_definition_printer_empty():
+def test_function_definition_empty():
     pretty_printer = printer.PrettyPrinter()
     expected = 'def foo() {\n}'
     function = model.FunctionDefinition("foo", model.Function([], []))
     assert function.accept(pretty_printer) == expected
 
 
-def test_function_definition_printer():
+def test_function_definition():
     pretty_printer = printer.PrettyPrinter()
     function = model.Function(
         ['a', 'b'],
@@ -68,40 +73,17 @@ def test_function_definition_printer():
     assert func_def.accept(pretty_printer) == textwrap.dedent(expected)
 
 
-def test_print_printer():
+def test_print():
     pretty_printer = printer.PrettyPrinter()
     assert model.Print(model.Number(42)).accept(pretty_printer) == 'print 42;'
 
 
-def test_read_printer():
+def test_read():
     pretty_printer = printer.PrettyPrinter()
     assert model.Read('x').accept(pretty_printer) == 'read x;'
 
 
-def test_number_printer():
-    pretty_printer = printer.PrettyPrinter()
-    assert model.Number(10).accept(pretty_printer) == '10;'
-
-
-def test_reference_printer():
-    pretty_printer = printer.PrettyPrinter()
-    assert model.Reference('x').accept(pretty_printer) == 'x;'
-
-
-def test_binary_operation_printer():
-    pretty_printer = printer.PrettyPrinter()
-    add = model.BinaryOperation(model.Number(2), '+', model.Number(3))
-    mul = model.BinaryOperation(model.Number(1), '*', add)
-    assert mul.accept(pretty_printer) == '(1) * ((2) + (3));'
-
-
-def test_unary_operation_printer():
-    pretty_printer = printer.PrettyPrinter()
-    assert model.UnaryOperation(
-        '-', model.Number(42)).accept(pretty_printer) == '-(42);'
-
-
-def test_function_call_printer():
+def test_function_call():
     pretty_printer = printer.PrettyPrinter()
     func_call = model.FunctionCall(
         model.Reference('foo'), [
@@ -111,6 +93,24 @@ def test_function_call_printer():
         ]
     )
     assert func_call.accept(pretty_printer) == 'foo(1, 2, 3);'
+
+
+def test_reference():
+    pretty_printer = printer.PrettyPrinter()
+    assert model.Reference('x').accept(pretty_printer) == 'x;'
+
+
+def test_binary_operation():
+    pretty_printer = printer.PrettyPrinter()
+    add = model.BinaryOperation(model.Number(2), '+', model.Number(3))
+    mul = model.BinaryOperation(model.Number(1), '*', add)
+    assert mul.accept(pretty_printer) == '(1) * ((2) + (3));'
+
+
+def test_unary_operation():
+    pretty_printer = printer.PrettyPrinter()
+    assert model.UnaryOperation(
+        '-', model.Number(42)).accept(pretty_printer) == '-(42);'
 
 
 def test_pretty_print(capsys):

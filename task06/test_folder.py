@@ -3,7 +3,7 @@ import model
 import printer
 
 
-def test_number_binary_operation_folder():
+def test_number_binary_operation():
     operation = model.BinaryOperation(
         model.BinaryOperation(
             model.Number(12),
@@ -16,7 +16,7 @@ def test_number_binary_operation_folder():
     assert operation == model.Number(1)
 
 
-def test_number_binary_operation_folder_nothing():
+def test_number_binary_operation_nothing():
     operation = model.BinaryOperation(
         model.Reference('a'),
         '+',
@@ -31,7 +31,7 @@ def test_number_binary_operation_folder_nothing():
             new_op.right.var_name == 'b')
 
 
-def test_multiplication_by_zero_folder():
+def test_multiplication_by_zero():
     operation = model.BinaryOperation(
         model.Reference('kek'),
         '*',
@@ -46,7 +46,7 @@ def test_multiplication_by_zero_folder():
     assert operation == model.Number(0)
 
 
-def test_itself_substraction_folder():
+def test_itself_substraction():
     operation = model.BinaryOperation(
         model.Reference('kek'),
         '-',
@@ -55,7 +55,7 @@ def test_itself_substraction_folder():
     assert operation == model.Number(0)
 
 
-def test_number_unary_operation_folder():
+def test_number_unary_operation():
     operation = model.UnaryOperation(
         '-', model.Number(42)
     ).accept(folder.ConstantFolder())
