@@ -61,8 +61,8 @@ def test_conditional_false():
 
 def test_print(capsys):
     scope = model.Scope()
-    result = model.Print(model.Number(346)).evaluate(scope)
-    assert result == model.Number(346)
+    expected = model.Print(model.Number(346)).evaluate(scope)
+    assert expected == model.Number(346)
     out, err = capsys.readouterr()
     assert out == '346\n'
     assert not err
@@ -71,8 +71,8 @@ def test_print(capsys):
 def test_read(monkeypatch):
     monkeypatch.setattr('builtins.input', lambda: '228')
     scope = model.Scope()
-    result = model.Read('a').evaluate(scope)
-    assert result == model.Number(228)
+    expected = model.Read('a').evaluate(scope)
+    assert expected == model.Number(228)
     assert scope['a'] == model.Number(228)
 
 
@@ -92,8 +92,8 @@ def test_function_call():
             model.Reference('val')
         ]
     )
-    result = model.FunctionCall(foo, [model.Number(0)]).evaluate(scope)
-    assert result == model.Number(0)
+    expected = model.FunctionCall(foo, [model.Number(0)]).evaluate(scope)
+    assert expected == model.Number(0)
 
 
 def test_binary_operation():
