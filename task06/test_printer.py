@@ -5,10 +5,12 @@ import textwrap
 
 def test_conditional_printer_empty():
     pretty_printer = printer.PrettyPrinter()
-    result = '''if (42) {
-}'''
-    assert model.Conditional(model.Number(42),
-                             [], []).accept(pretty_printer) == result
+    result = '''\
+        if (42) {
+        }'''
+    assert textwrap.dedent(
+        model.Conditional(model.Number(42), [], []).accept(pretty_printer)
+    ) == textwrap.dedent(result)
 
 
 def test_conditional_printer():
@@ -18,8 +20,14 @@ def test_conditional_printer():
         [model.Print(model.Number(1))],
         [model.Print(model.Number(0))]
     )
-    result = 'if (42) {\n    print 1;\n} else {\n    print 0;\n}'
-    assert condition.accept(pretty_printer) == result
+    result = '''\
+        if (42) {
+            print 1;
+        } else {
+            print 0;
+        }'''
+    assert textwrap.dedent(condition.accept(
+        pretty_printer)) == textwrap.dedent(result)
 
 
 def test_conditional_if_true_none():
@@ -29,8 +37,13 @@ def test_conditional_if_true_none():
         None,
         [model.Print(model.Number(0))]
     )
-    result = 'if (42) {\n} else {\n    print 0;\n}'
-    assert condition.accept(pretty_printer) == result
+    result = '''\
+        if (42) {
+        } else {
+            print 0;
+        }'''
+    assert textwrap.dedent(condition.accept(
+        pretty_printer)) == textwrap.dedent(result)
 
 
 def test_function_definition_printer_empty():
@@ -123,7 +136,7 @@ def test_pretty_print(capsys):
     printer.pretty_print(func_def)
     out, err = capsys.readouterr()
     assert not err
-    expected = '''\
+    result = '''\
         def main(arg1) {
             read x;
             print x;
@@ -135,4 +148,4 @@ def test_pretty_print(capsys):
             }
         }
     '''
-    assert textwrap.dedent(out) == textwrap.dedent(expected)
+    assert textwrap.dedent(out) == textwrap.dedent(result)
