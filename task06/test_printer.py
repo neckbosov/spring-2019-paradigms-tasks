@@ -1,5 +1,6 @@
 import printer
 import model
+import textwrap
 
 
 def test_conditional_printer_empty():
@@ -122,14 +123,16 @@ def test_pretty_print(capsys):
     printer.pretty_print(func_def)
     out, err = capsys.readouterr()
     assert not err
-    assert out == '''def main(arg1) {
-    read x;
-    print x;
-    if ((2) == (3)) {
-        if (1) {
+    expected = '''\
+        def main(arg1) {
+            read x;
+            print x;
+            if ((2) == (3)) {
+                if (1) {
+                }
+            } else {
+                exit(-(arg1));
+            }
         }
-    } else {
-        exit(-(arg1));
-    }
-}
-'''
+    '''
+    assert textwrap.dedent(out) == textwrap.dedent(expected)
