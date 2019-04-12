@@ -11,17 +11,17 @@ class ConstantFolder(model.ASTNodeVisitor):
             [statement.accept(self) for statement in function.body]
         )
 
+    def visit_function_definition(self, function_definition):
+        return model.FunctionDefinition(
+            function_definition.name,
+            function_definition.func.accept(self)
+        )
+
     def visit_conditional(self, condition):
         return model.Conditional(
             condition.condition.accept(self),
             [statement.accept(self) for statement in condition.if_true or []],
             [statement.accept(self) for statement in condition.if_false or []],
-        )
-
-    def visit_function_definition(self, function_definition):
-        return model.FunctionDefinition(
-            function_definition.name,
-            function_definition.func.accept(self)
         )
 
     def visit_print(self, print_object):
