@@ -47,11 +47,13 @@ use std::sync::mpsc::channel;
 /// Таким образом, тут для каждого параметра надо выбрать самый нестрогий тип замыкания из возможных:
 /// * Так как `solved_cb` вызывается не более одного раза, можно выбрать самый общий тип — `FnOnce`.
 /// * Так как `next_step_cb` может вызваться несколько раз, `FnOnce` не выбрать. А вот выбрать `FnMut` можно.
+
 fn try_extend_field<T>(
     f: &mut Field,
     solved_cb: impl FnOnce(&mut Field) -> T,
     mut next_step_cb: impl FnMut(&mut Field) -> Option<T>,
 ) -> Option<T> {
+    // println!("{:?}\n", f);
     // Проверяем простые случаи:
     // 1. Поле противоречиво — решения нет.
     if f.contradictory() {
@@ -173,8 +175,22 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let n_workers = 8;
     let pool = ThreadPool::new(n_workers);
     let (tx, rx) = channel();
-    pool.execute(move || tx.send(find_solution(&mut f)).unwrap());
-    rx.recv().unwrap()
+    let next_step_cb = |fi: &mut Field| -> Option<Field> {
+        let tx = tx.clone();
+        let mut fi = fi.clone();
+        pool.execute(move || {
+            tx.send(find_solution(&mut fi)).unwrap_or(());
+        });
+        None
+    };
+    let solved_cb = |fi: &mut Field| -> Field {
+        let tx = tx.clone();
+        tx.send(Some(fi.clone())).unwrap_or(());
+        fi.clone()
+    };
+    let result = try_extend_field(&mut f, solved_cb, next_step_cb);
+    std::mem::drop(tx);
+    rx.into_iter().find_map(|x| x)
 }
 
 /// Юнит-тест, проверяющий, что `find_solution()` находит лексикографически минимальное решение на пустом поле.
