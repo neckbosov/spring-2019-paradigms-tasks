@@ -205,7 +205,7 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let n_workers = 8;
     let pool = ThreadPool::new(n_workers);
     let (tx, rx) = channel();
-    spawn_tasks(&mut f, &pool, tx, 0);
+    spawn_tasks(&mut f, &pool, tx, 1);
     rx.into_iter().find_map(|x| x)
 }
 
