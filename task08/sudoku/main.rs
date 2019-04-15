@@ -12,7 +12,7 @@ use threadpool::ThreadPool;
 use field::Cell::*;
 use field::{parse_field, Field, N};
 use std::sync::mpsc::{channel, Sender};
-
+const SPAWN_DEPTH: i32 = 2;
 /// Эта функция выполняет один шаг перебора в поисках решения головоломки.
 /// Она перебирает значение какой-нибудь пустой клетки на поле всеми непротиворечивыми способами.
 /// Что делать после фиксации значения, задаётся параметрами функции.
@@ -167,21 +167,36 @@ fn test_try_extend_field_first_steps() {
 fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
-fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: Sender<Option<Field>>) {
-    let next_step_cb = |fi: &mut Field| -> Option<Field> {
-        let tx = tx.clone();
-        let mut fi = fi.clone();
-        pool.execute(move || {
-            tx.send(find_solution(&mut fi)).unwrap_or(());
-        });
-        None
-    };
-    let solved_cb = |fi: &mut Field| -> Field {
-        let tx = tx.clone();
-        tx.send(Some(fi.clone())).unwrap_or(());
-        fi.clone()
-    };
-    try_extend_field(f, solved_cb, next_step_cb);
+fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: Sender<Option<Field>>, current_depth: i32) {
+    if current_depth < SPAWN_DEPTH {
+        let next_step_cb = |fi: &mut Field| -> Option<Field> {
+            let tx = tx.clone();
+            let mut fi = fi.clone();
+            spawn_tasks(&mut fi, pool, tx, current_depth + 1);
+            None
+        };
+        let solved_cb = |fi: &mut Field| -> Field {
+            let tx = tx.clone();
+            tx.send(Some(fi.clone())).unwrap_or(());
+            fi.clone()
+        };
+        try_extend_field(f, solved_cb, next_step_cb);
+    } else {
+        let next_step_cb = |fi: &mut Field| -> Option<Field> {
+            let tx = tx.clone();
+            let mut fi = fi.clone();
+            pool.execute(move || {
+                tx.send(find_solution(&mut fi)).unwrap_or(());
+            });
+            None
+        };
+        let solved_cb = |fi: &mut Field| -> Field {
+            let tx = tx.clone();
+            tx.send(Some(fi.clone())).unwrap_or(());
+            fi.clone()
+        };
+        try_extend_field(f, solved_cb, next_step_cb);
+    }
 }
 /// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
 /// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
@@ -190,7 +205,7 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let n_workers = 8;
     let pool = ThreadPool::new(n_workers);
     let (tx, rx) = channel();
-    spawn_tasks(&mut f, &pool, tx);
+    spawn_tasks(&mut f, &pool, tx, 0);
     rx.into_iter().find_map(|x| x)
 }
 
