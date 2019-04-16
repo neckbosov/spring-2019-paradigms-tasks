@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 threadpool = "1.7.1"
+
 [[bin]]
 name = "sudoku"
 path = "main.rs"
