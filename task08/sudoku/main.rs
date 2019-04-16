@@ -14,7 +14,6 @@ use threadpool::ThreadPool;
 use field::Cell::*;
 use field::{parse_field, Field, N};
 use std::sync::mpsc::{channel, Sender};
-const SPAWN_DEPTH: i32 = 2;
 
 /// Эта функция выполняет один шаг перебора в поисках решения головоломки.
 /// Она перебирает значение какой-нибудь пустой клетки на поле всеми непротиворечивыми способами.
@@ -171,11 +170,11 @@ fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
 fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: Sender<Option<Field>>, current_depth: i32) {
-    if current_depth < SPAWN_DEPTH {
+    if current_depth > 1 {
         let next_step_cb = |fi: &mut Field| -> Option<Field> {
             let tx = tx.clone();
             let mut fi = fi.clone();
-            spawn_tasks(&mut fi, pool, tx, current_depth + 1);
+            spawn_tasks(&mut fi, pool, tx, current_depth - 1);
             None
         };
         let solved_cb = |fi: &mut Field| -> Field {
@@ -205,10 +204,11 @@ fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: Sender<Option<Field>>, curr
 /// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
 /// в противном случае возвращает `None`.
 fn find_solution_parallel(mut f: Field) -> Option<Field> {
+    const SPAWN_DEPTH: i32 = 2;
     let n_workers = 8;
     let pool = ThreadPool::new(n_workers);
     let (tx, rx) = channel();
-    spawn_tasks(&mut f, &pool, tx, 1);
+    spawn_tasks(&mut f, &pool, tx, SPAWN_DEPTH);
     rx.into_iter().find_map(|x| x)
 }
 
