@@ -170,35 +170,23 @@ fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
 fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: Sender<Option<Field>>, current_depth: i32) {
-    if current_depth > 1 {
-        let next_step_cb = |fi: &mut Field| -> Option<Field> {
-            let tx = tx.clone();
-            let mut fi = fi.clone();
+    let solved_cb = |fi: &mut Field| -> Field {
+        tx.send(Some(fi.clone())).unwrap_or(());
+        fi.clone()
+    };
+    let next_step_cb = |fi: &mut Field| -> Option<Field> {
+        let tx = tx.clone();
+        let mut fi = fi.clone();
+        if current_depth > 1 {
             spawn_tasks(&mut fi, pool, tx, current_depth - 1);
-            None
-        };
-        let solved_cb = |fi: &mut Field| -> Field {
-            let tx = tx.clone();
-            tx.send(Some(fi.clone())).unwrap_or(());
-            fi.clone()
-        };
-        try_extend_field(f, solved_cb, next_step_cb);
-    } else {
-        let next_step_cb = |fi: &mut Field| -> Option<Field> {
-            let tx = tx.clone();
-            let mut fi = fi.clone();
+        } else {
             pool.execute(move || {
                 tx.send(find_solution(&mut fi)).unwrap_or(());
             });
-            None
-        };
-        let solved_cb = |fi: &mut Field| -> Field {
-            let tx = tx.clone();
-            tx.send(Some(fi.clone())).unwrap_or(());
-            fi.clone()
-        };
-        try_extend_field(f, solved_cb, next_step_cb);
-    }
+        }
+        None
+    };
+    try_extend_field(f, solved_cb, next_step_cb);
 }
 /// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
 /// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
