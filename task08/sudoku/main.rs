@@ -169,24 +169,25 @@ fn test_try_extend_field_first_steps() {
 fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
-fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: Sender<Option<Field>>, current_depth: i32) {
-    let solved_cb = |fi: &mut Field| -> Field {
-        tx.send(Some(fi.clone())).unwrap_or(());
-        fi.clone()
-    };
-    let next_step_cb = |fi: &mut Field| -> Option<Field> {
+fn spawn_tasks(f: &mut Field, pool: &ThreadPool, tx: &Sender<Option<Field>>, current_depth: i32) {
+    if current_depth == 0 {
         let tx = tx.clone();
-        let mut fi = fi.clone();
-        if current_depth > 1 {
-            spawn_tasks(&mut fi, pool, tx, current_depth - 1);
-        } else {
-            pool.execute(move || {
-                tx.send(find_solution(&mut fi)).unwrap_or(());
-            });
-        }
-        None
-    };
-    try_extend_field(f, solved_cb, next_step_cb);
+        let mut fi = f.clone();
+        pool.execute(move || {
+            tx.send(find_solution(&mut fi)).unwrap_or(());
+        });
+    } else {
+        try_extend_field(
+            f,
+            |fi| {
+                tx.send(Some(fi.clone())).unwrap_or(());
+            },
+            |fi| {
+                spawn_tasks(fi, pool, tx, current_depth - 1);
+                None
+            },
+        );
+    }
 }
 /// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
 /// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
@@ -196,7 +197,8 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let n_workers = 8;
     let pool = ThreadPool::new(n_workers);
     let (tx, rx) = channel();
-    spawn_tasks(&mut f, &pool, tx, SPAWN_DEPTH);
+    spawn_tasks(&mut f, &pool, &tx, SPAWN_DEPTH);
+    std::mem::drop(tx);
     rx.into_iter().find_map(|x| x)
 }
 
