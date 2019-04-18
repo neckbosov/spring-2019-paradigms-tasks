@@ -49,13 +49,11 @@ use std::sync::mpsc::{channel, Sender};
 /// Таким образом, тут для каждого параметра надо выбрать самый нестрогий тип замыкания из возможных:
 /// * Так как `solved_cb` вызывается не более одного раза, можно выбрать самый общий тип — `FnOnce`.
 /// * Так как `next_step_cb` может вызваться несколько раз, `FnOnce` не выбрать. А вот выбрать `FnMut` можно.
-
 fn try_extend_field<T>(
     f: &mut Field,
     solved_cb: impl FnOnce(&mut Field) -> T,
     mut next_step_cb: impl FnMut(&mut Field) -> Option<T>,
 ) -> Option<T> {
-    // println!("{:?}\n", f);
     // Проверяем простые случаи:
     // 1. Поле противоречиво — решения нет.
     if f.contradictory() {
