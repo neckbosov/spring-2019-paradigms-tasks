@@ -6,8 +6,8 @@ void threadsafe_queue_init(ThreadsafeQueue *q) {
 }
 
 void threadsafe_queue_destroy(ThreadsafeQueue *q) {
-    pthread_mutex_destroy(&(q->m));
     pthread_cond_destroy(&(q->cond));
+    pthread_mutex_destroy(&(q->m));
     queue_destroy(&(q->q));
 }
 
