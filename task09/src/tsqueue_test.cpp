@@ -44,12 +44,12 @@ TEST_CASE("ThreadsafeQueue multithreaded ping-pong") {
         ThreadsafeQueue *qs = static_cast<ThreadsafeQueue *>(_qs);
         int counter = 0;
         for (int i = 0; i < PING_PONGS; ++i) {
-            int last = counter;
+            int expected_counter = counter + 1;
             threadsafe_queue_push(qs, &counter);
             int *result =
                 static_cast<int *>(threadsafe_queue_wait_and_pop(qs + 1));
             CHECK(&counter == result);
-            CHECK(counter == last + 1);
+            CHECK(counter == expected_counter);
         }
         return nullptr;
     };
