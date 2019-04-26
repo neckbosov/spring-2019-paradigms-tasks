@@ -19,12 +19,11 @@ void threadsafe_queue_push(ThreadsafeQueue *q, void *data) {
 }
 
 void *threadsafe_queue_wait_and_pop(ThreadsafeQueue *q) {
-    void *result;
     pthread_mutex_lock(&(q->m));
     while (queue_empty(&(q->q))) {
         pthread_cond_wait(&q->cond, &q->m);
     }
-    result = queue_pop(&q->q);
+    void *result = queue_pop(&q->q);
     pthread_mutex_unlock(&q->m);
     return result;
 }
