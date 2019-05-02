@@ -36,6 +36,4 @@ test-suite robots
         base >=4.11
         , tasty >= 0.8
         , tasty-hunit >= 0.10
-        , hspec >=2 && <2.8
-        , tasty-hspec >= 1.1.5
         , task10
