@@ -31,4 +31,22 @@ testsBasics = testGroup "Unit tests for Basics tasks"
 
     , testCase "quickSort actualy sorts the list" $
         quickSort' [5,2,3,4,1] @?= [1..5]
+
+    , testCase "head' works on infinite list" $
+        head' [5..] @?= 5
+     
+    , testCase "tail' works on infinite list" $
+        (head' . tail') [5..] @?= 6
+
+    , testCase "take' works on infinite list" $
+        take' 4 [5..] @?= [5..8]
+
+    , testCase "drop' works on infinite list" $
+        head' (drop' 4 [5..]) @?= 9  
+    
+    , testCase "filter' works on infinite list" $
+        head' (filter' (\x -> x `mod` 4 == 0) [5..]) @?= 8
+    
+    , testCase "concat' works on infinite lists" $
+        head' (concat' [3..] [5..]) @?= 3
     ]
