@@ -76,7 +76,7 @@ isAlive a = getHealth a > 0
 -- Обратите внимание, что неживой робот не может атаковать. В этом случае нужно просто
 -- вернуть второго робота, как будто ничего и не было
 fight :: Robot -> Robot -> Robot
-fight attacker defender | getHealth attacker > 0 = setHealth (getHealth defender - getAttack attacker) defender
+fight attacker defender | isAlive attacker = setHealth (getHealth defender - getAttack attacker) defender
                         | otherwise = defender
 
 -- На основе fight напишем функцию multiRoundFight, моделирующую многораундовый поединок
@@ -119,4 +119,4 @@ neueRobotAttak  = fight neueRobot
 -- Наконец, используя filter определите, кто из роботов, которых вы положили в список roboter,
 -- выживет, если neueRobot сразится с ним в одном раунде.
 survivors :: [Robot]
-survivors = filter ((> 0) . getHealth . neueRobotAttak) roboter
+survivors = filter (isAlive . neueRobotAttak) roboter
