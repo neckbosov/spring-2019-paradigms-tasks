@@ -119,4 +119,4 @@ neueRobotAttak  = fight neueRobot
 -- Наконец, используя filter определите, кто из роботов, которых вы положили в список roboter,
 -- выживет, если neueRobot сразится с ним в одном раунде.
 survivors :: [Robot]
-survivors = filter (\x -> getHealth (neueRobotAttak x) > 0) roboter
+survivors = filter ((> 0) . getHealth . neueRobotAttak) roboter
