@@ -9,29 +9,29 @@ import Prelude hiding (head, tail, take, drop, filter, foldl, concat, (++))
 
 -- 1. head' возвращает первый элемент непустого списка
 head' :: [a] -> a
-head' (x : _) = x
+head' (x:_) = x
 
 -- 2. tail' возвращает список без первого элемента, для пустого - пустой
 tail' :: [a] -> [a]
 tail' [] = []
-tail' (_ : xs) = xs
+tail' (_:xs) = xs
 
 -- 3. take' возвращает первые n >= 0 элементов исходного списка
 take' :: Int -> [a] -> [a]
 take' 0 _ = []
-take' n (x : xs)  = x : take' (n - 1) xs
+take' n (x:xs)  = x : take' (n - 1) xs
 
 -- 4. drop' возвращает список без первых n >= 0 элементов; если n больше длины
 -- списка, то пустой список.
 drop' :: Int -> [a] -> [a]
 drop' 0 x = x
 drop' _ [] = []
-drop' n (_ : xs) = drop' (n - 1) xs
+drop' n (_:xs) = drop' (n - 1) xs
 
 -- 5. filter' возвращает список из элементов, для которых f возвращает True
 filter' :: (a -> Bool) -> [a] -> [a]
 filter' _ [] = []
-filter' f (x : xs) = if f x
+filter' f (x:xs) = if f x
                    then x : filter' f xs
                    else filter' f xs
 
@@ -41,17 +41,17 @@ filter' f (x : xs) = if f x
 -- foldl'' (*) 4 [] == 4
 foldl'' :: (a -> b -> a) -> a -> [b] -> a
 foldl'' _ z [] = z
-foldl'' f z (x : xs) = foldl'' f (f z x) xs
+foldl'' f z (x:xs) = foldl'' f (f z x) xs
 
 -- 7. concat' принимает на вход два списка и возвращает их конкатенацию
 -- concat' [1,2] [3] == [1,2,3]
 concat' :: [a] -> [a] -> [a]
 concat' [] b = b
-concat' (x : xs) b = x : concat' xs b
+concat' (x:xs) b = x : concat' xs b
 
 -- 8. quickSort' возвращает его отсортированный список
 -- quickSort' должен быть реализован через алгоритм QuickSort
 -- (выбор pivot может быть любым)
 quickSort' :: Ord a => [a] -> [a]
 quickSort' [] = []
-quickSort' (x : xs) = concat' (quickSort' (filter' (<= x) xs)) (x : quickSort' (filter' (> x) xs))
+quickSort' (x:xs) = concat' (quickSort' (filter' (<= x) xs)) (x : quickSort' (filter' (> x) xs))
