@@ -87,9 +87,8 @@ multiRoundFight n attacker defender = let (a, b) = multiRoundFight (n - 1) (figh
 
 -- Вспомогательная функция, возвращающая наиболее здорового робота из двух
 maxByHealth :: Robot -> Robot -> Robot
-maxByHealth a b = if getHealth a >= getHealth b
-                  then a
-                  else b
+maxByHealth a b | getHealth a >= getHealth b = a
+                | otherwise = b
 -- Наконец, напишите функцию, которая бы моделировала три раунда схватки между
 -- двумя роботами и возвращала бы победителя. Схватка происходит следующим образом:
 -- 1. Атакующий робот ударяет защищающегося, как в предыдущей функции
