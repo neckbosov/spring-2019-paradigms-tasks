@@ -101,7 +101,7 @@ maxByHealth a b | getHealth a >= getHealth b = a
 -- Если же так вышло, что после трех раундов у обоих роботов одинаковый уровень жизни, то
 -- победителем считается тот, кто ударял первым(то есть атакующий робот)
 threeRoundFight :: Robot -> Robot -> Robot
-threeRoundFight attacker defender = let (a, b) = multiRoundFight 3 attacker defender in maxByHealth a b
+threeRoundFight attacker defender = uncurry maxByHealth (multiRoundFight 3 attacker defender)
 
 -- Шаг 4.
 -- Создайте список из трех роботов(Абсолютно любых, но лучше живых, мы собираемся их побить)
