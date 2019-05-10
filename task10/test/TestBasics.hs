@@ -43,13 +43,19 @@ testsBasics = testGroup "Unit tests for Basics tasks"
 
     , testCase "foldl'' can be used for calculating power tower" $
         foldl'' (flip (^)) 1 [2, 3, 4] @?= 4 ^ (3 ^ 2)
-        
+
     , testCase "concat' works on finite lists as expected" $
         concat' [1,2,3] [4,5,6] @?= [1..6]
 
-    , testCase "concat' works on infinite lists" $
-        head' (concat' [3..] [5..]) @?= 3
+    , testCase "concat' works on both infinite lists" $
+        take 4 (concat' [3..] [5..]) @?= [3..6]
 
+    , testCase "concat' works when left list is infinite" $
+        take 4 (concat' [3..] [5, 6, 7]) @?= [3..6]
+
+    , testCase "concat' works when left list is infinite" $
+        take 4 (concat' [3, 4] [8..]) @?= [3, 4, 8, 9]   
+        
     , testCase "quickSort actualy sorts the list" $
         quickSort' [5,2,3,4,1] @?= [1..5]
     ]
