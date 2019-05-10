@@ -77,7 +77,7 @@ isAlive a = getHealth a > 0
 -- вернуть второго робота, как будто ничего и не было
 fight :: Robot -> Robot -> Robot
 fight attacker defender | isAlive attacker = setHealth (getHealth defender - getAttack attacker) defender
-                        | otherwise = defender
+                        | otherwise        = defender
 
 -- На основе fight напишем функцию multiRoundFight, моделирующую многораундовый поединок
 -- и возвращающую обеих роботов с измененным значением здоровья
@@ -88,7 +88,7 @@ multiRoundFight n attacker defender = let (a, b) = multiRoundFight (n - 1) (figh
 -- Вспомогательная функция, возвращающая наиболее здорового робота из двух
 maxByHealth :: Robot -> Robot -> Robot
 maxByHealth a b | getHealth a >= getHealth b = a
-                | otherwise = b
+                | otherwise                  = b
 -- Наконец, напишите функцию, которая бы моделировала три раунда схватки между
 -- двумя роботами и возвращала бы победителя. Схватка происходит следующим образом:
 -- 1. Атакующий робот ударяет защищающегося, как в предыдущей функции
