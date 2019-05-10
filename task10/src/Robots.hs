@@ -35,13 +35,13 @@ getHealth (_, _, myHealth) = myHealth
 -- состояние робота
 
 setName :: Name -> Robot -> Robot
-setName newName (_, attack, hp) = (newName, attack, hp)
+setName newName (_, attack, hp) = robot newName, attack, hp
 
 setAttack :: Attack -> Robot -> Robot
-setAttack newAttack (name, _, hp) = (name, newAttack, hp)
+setAttack newAttack (name, _, hp) = robot name, newAttack, hp
 
 setHealth :: Health -> Robot -> Robot
-setHealth newHealth (name, attack, _) = (name, attack, newHealth)
+setHealth newHealth (name, attack, _) = robot name, attack, newHealth
 
 -- Шаг 2.
 -- Напишите функцию, которая ведет себя как __str__
