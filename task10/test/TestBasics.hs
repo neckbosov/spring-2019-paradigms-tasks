@@ -12,7 +12,7 @@ testsBasics = testGroup "Unit tests for Basics tasks"
         head' [1,2,3] @?= 1
 
     , testCase "head' works on infinite list" $
-            head' [5..] @?= 5
+        head' [5..] @?= 5
 
     , testCase "tail' works on non-empty list too" $
         tail' [1,2,3] @?= [2,3]
