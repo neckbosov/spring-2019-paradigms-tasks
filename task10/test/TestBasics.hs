@@ -18,7 +18,7 @@ testsBasics = testGroup "Unit tests for Basics tasks"
         tail' [1,2,3] @?= [2,3]
 
     , testCase "tail' works on infinite list" $
-        (head' . tail') [5..] @?= 6
+        take 4 (tail' [5..]) @?= [6..9]
 
     , testCase "take' takes 1 element from 3-element list" $
         take' 1 [1,2,3] @?= [1]
@@ -30,13 +30,13 @@ testsBasics = testGroup "Unit tests for Basics tasks"
         drop' 1 [1,2,3] @?= [2,3]
 
     , testCase "drop' works on infinite list" $
-        head' (drop' 4 [5..]) @?= 9  
+        take 4 (drop' 4 [5..]) @?= [9..12]  
     
     , testCase "filter' selects only even numbers from 0 to 10" $
         filter' even [0..10] @?= [0,2..10]
         
     , testCase "filter' works on infinite list" $
-        head' (filter' (\x -> x `mod` 4 == 0) [5..]) @?= 8
+        take 4 (filter' (\x -> x `mod` 4 == 0) [5..]) @?= [8, 12, 16, 20]
         
     , testCase "foldl'' can be used for finding sum of elements" $
         foldl'' (+) 0 [1,2,3] @?= 6
