@@ -36,7 +36,7 @@ testsBasics = testGroup "Unit tests for Basics tasks"
         filter' even [0..10] @?= [0,2..10]
         
     , testCase "filter' works on infinite list" $
-            head' (filter' (\x -> x `mod` 4 == 0) [5..]) @?= 8
+        head' (filter' (\x -> x `mod` 4 == 0) [5..]) @?= 8
         
     , testCase "foldl'' can be used for finding sum of elements" $
         foldl'' (+) 0 [1,2,3] @?= 6
