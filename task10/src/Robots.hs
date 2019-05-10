@@ -1,5 +1,7 @@
 module Robots where
 
+import Data.Tuple
+
 -- Во второй части этого домашнего задания вам предстоит промоделировать битвы роботов
 -- Цель этой части показать, как моделировать концепции из объектно-ориентированного
 -- программирования в функциональном стиле
@@ -35,13 +37,13 @@ getHealth (_, _, myHealth) = myHealth
 -- состояние робота
 
 setName :: Name -> Robot -> Robot
-setName newName (_, attack, health) = robot newName, attack, health
+setName newName (_, attack, health) = robot newName attack health
 
 setAttack :: Attack -> Robot -> Robot
-setAttack newAttack (name, _, health) = robot name, newAttack, health
+setAttack newAttack (name, _, health) = robot name newAttack health
 
 setHealth :: Health -> Robot -> Robot
-setHealth newHealth (name, attack, _) = robot name, attack, newHealth
+setHealth newHealth (name, attack, _) = robot name attack newHealth
 
 -- Шаг 2.
 -- Напишите функцию, которая ведет себя как __str__
@@ -83,7 +85,7 @@ fight attacker defender | isAlive attacker = setHealth (getHealth defender - get
 -- и возвращающую обеих роботов с измененным значением здоровья
 multiRoundFight :: Int -> Robot -> Robot -> (Robot, Robot)
 multiRoundFight 0 attacker defender = (attacker, defender)
-multiRoundFight n attacker defender = let (a, b) = multiRoundFight (n - 1) (fight attacker defender) attacker in (b, a)
+multiRoundFight n attacker defender = swap (multiRoundFight (n - 1) (fight attacker defender) attacker)
 
 -- Вспомогательная функция, возвращающая наиболее здорового робота из двух
 maxByHealth :: Robot -> Robot -> Robot
