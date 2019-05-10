@@ -46,7 +46,7 @@ testsBasics = testGroup "Unit tests for Basics tasks"
 
     , testCase "concat' works on infinite lists" $
         head' (concat' [3..] [5..]) @?= 3
-        
+
     , testCase "quickSort actualy sorts the list" $
         quickSort' [5,2,3,4,1] @?= [1..5]
     ]
