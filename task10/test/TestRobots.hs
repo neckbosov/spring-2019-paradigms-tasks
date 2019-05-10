@@ -8,8 +8,8 @@ main = defaultMain testsRobots
 
 testsRobots :: TestTree
 testsRobots = let
-        (walter,died) = (robot "Walter" 50 50,
-         robot "Died" 40 0)
+        walter = robot "Walter" 50 50
+        died = robot "Died" 40 0
     in testGroup "Unit tests for Robots task"
         [ testCase "Test for getName" $
             getName walter @?= "Walter"
@@ -38,13 +38,13 @@ testsRobots = let
             isAlive died @?= False
 
         , testCase "Test for fight" $
-            getHealth (fight walter died) @?= -50
+            fight walter died @?= robot "Died" 40 (-50)
 
         , testCase "Test for fight died attacker" $
-            getHealth (fight died walter) @?= 50
+            fight died walter @?= walter
 
         , testCase "Test for multiRoundFight" $
-            let (a,b) = multiRoundFight 5 walter died in getHealth b @?= -150
+            multiRoundFight 5 walter died @?= (walter, robot "Died" 40 (-150))
 
         , testCase "Test for maxByHealth" $
             maxByHealth walter died @?= walter
