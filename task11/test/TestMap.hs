@@ -84,10 +84,6 @@ mapTests name (_ :: Proxy m) =
                 let tr = singleton 6 "a" :: m Int String in 
                     fromJust (Map.lookup 6 tr) @?= "a"
                 ,
-            testCase "Test lookup" $
-                let tr = singleton 6 "a" :: m Int String in 
-                    fromJust (Map.lookup 6 tr) @?= "a"
-                ,
             testCase "Test member" $
                 let tr = singleton 6 "a" :: m Int String in 
                     member 6 tr @?= True
