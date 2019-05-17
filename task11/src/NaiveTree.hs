@@ -27,7 +27,7 @@ data NaiveTree k a =
   что все ключи из @l@ строго меньше ключей из @r@.
 -}
 merge :: NaiveTree k a -> NaiveTree k a -> NaiveTree k a
-merge Nil right          = right
+merge Nil r              = r
 merge (Node k v ll rl) r = Node k v ll (merge rl r)
 
 {-|
@@ -48,25 +48,25 @@ instance Map NaiveTree where
 
     singleton k v = Node k v Nil Nil 
 
-    toAscList Nil                   = []
-    toAscList (Node k v left right) = toAscList left ++ [(k, v)] ++ toAscList right
+    toAscList Nil            = []
+    toAscList (Node k v l r) = toAscList l ++ [(k, v)] ++ toAscList r
 
-    alter f key Nil                             = let v' = f Nothing in
+    alter f k' Nil                     = let v' = f Nothing in
         case v' of Nothing -> Nil
-                   Just v  -> Node key v Nil Nil
-    alter f key (Node k v left right) | key < k = Node k v (alter f key left) right
-    alter f key (Node k v left right) | key > k = Node k v left (alter f key right)
-    alter f key (Node _ v left right)           = let v' = (f $ Just v) in
-        case v' of Nothing   -> merge left right
-                   Just val  -> Node key val left right
+                   Just v  -> Node k' v Nil Nil
+    alter f k' (Node k v l r) | k' < k = Node k v (alter f k' l) r
+    alter f k' (Node k v l r) | k' > k = Node k v l (alter f k' r)
+    alter f k' (Node _ v l r)          = let v' = (f $ Just v) in
+        case v' of Nothing   -> merge l r
+                   Just val  -> Node k' val l r
 
-    lookup _ Nil                            = Nothing
-    lookup key (Node k _ left _)  | key < k = Map.lookup key left
-    lookup key (Node k _ _ right) | key > k = Map.lookup key right
-    lookup _ (Node _ v _ _)                 = Just v
+    lookup _  Nil                     = Nothing
+    lookup k' (Node k _ l _) | k' < k = Map.lookup k' l
+    lookup k' (Node k _ _ r) | k' > k = Map.lookup k' r
+    lookup _  (Node _ v _ _)          = Just v
 
     null Nil = True
     null _   = False
 
-    size Nil = 0
-    size (Node _ _ left right) = size left + 1 + size right
+    size Nil            = 0
+    size (Node _ _ l r) = size l + 1 + size r
