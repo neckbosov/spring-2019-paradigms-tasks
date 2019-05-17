@@ -81,28 +81,28 @@ mapTests name (_ :: Proxy m) =
                 fromJust (Map.lookup 6 tr) @?= "ba"
             ,
             testCase "Test lookup" $
-            let tr = singleton 6 "a" :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "a"
-            ,
+                let tr = singleton 6 "a" :: m Int String in 
+                    fromJust (Map.lookup 6 tr) @?= "a"
+                ,
             testCase "Test lookup" $
-            let tr = singleton 6 "a" :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "a"
-            ,
+                let tr = singleton 6 "a" :: m Int String in 
+                    fromJust (Map.lookup 6 tr) @?= "a"
+                ,
             testCase "Test member" $
-            let tr = singleton 6 "a" :: m Int String in 
-                member 6 tr @?= True
-            ,
+                let tr = singleton 6 "a" :: m Int String in 
+                    member 6 tr @?= True
+                ,
             testCase "Test notMember" $
-            let tr = singleton 6 "a" :: m Int String in 
-                notMember 4 tr @?= True
-            ,
+                let tr = singleton 6 "a" :: m Int String in 
+                    notMember 4 tr @?= True
+                ,
             testCase "Test null" $
-            let tr = singleton 6 "a" :: m Int String in 
-                Map.null tr @?= False
-            ,
+                let tr = singleton 6 "a" :: m Int String in 
+                    Map.null tr @?= False
+                ,
             testCase "Test size" $
-            let tr = fromList [(2, "a"), (1, "b"), (3, "c"), (1, "x")] :: m Int String in
-                size tr @?= 3
+                let tr = fromList [(2, "a"), (1, "b"), (3, "c"), (1, "x")] :: m Int String in
+                    size tr @?= 3
         ]
     ]
 
