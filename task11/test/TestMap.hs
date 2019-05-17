@@ -68,6 +68,14 @@ mapTests name (_ :: Proxy m) =
                 let tr = adjustWithKey (\k v -> show k ++ v) 6 (singleton 6 "a") :: m Int String in 
                 fromJust (Map.lookup 6 tr) @?= "6a"
             ,
+            testCase "Test update" $
+                let tr = update (const Nothing) 6 (singleton 6 "a") :: m Int String in 
+                Map.null tr @?= True
+            ,
+            testCase "Test updateWithKey" $
+                let tr = updateWithKey (\k v -> Just $ show k ++ v) 6 (singleton 6 "a") :: m Int String in 
+                fromJust (Map.lookup 6 tr) @?= "6a"
+            ,
             testCase "Test alter" $
                 let tr = alter (fmap $ (++) "b") 6 (singleton 6 "a") :: m Int String in 
                 fromJust (Map.lookup 6 tr) @?= "ba"
