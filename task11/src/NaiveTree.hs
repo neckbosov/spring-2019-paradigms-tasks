@@ -52,13 +52,13 @@ instance Map NaiveTree where
     toAscList (Node k v l r) = toAscList l ++ [(k, v)] ++ toAscList r
 
     alter f k' Nil                     = let v' = f Nothing in
-        case v' of Nothing -> Nil
-                   Just v  -> Node k' v Nil Nil
+        case v' of Nothing  -> Nil
+                   Just val -> Node k' v Nil Nil
     alter f k' (Node k v l r) | k' < k = Node k v (alter f k' l) r
     alter f k' (Node k v l r) | k' > k = Node k v l (alter f k' r)
     alter f k' (Node _ v l r)          = let v' = (f $ Just v) in
-        case v' of Nothing   -> merge l r
-                   Just val  -> Node k' val l r
+        case v' of Nothing  -> merge l r
+                   Just val -> Node k' val l r
 
     lookup _  Nil                     = Nothing
     lookup k' (Node k _ l _) | k' < k = Map.lookup k' l
