@@ -31,7 +31,7 @@ class Map t where
     singleton :: k -> a -> t k a
 
     fromList :: Ord k => [(k, a)] -> t k a
-    fromList = foldl ((flip . uncurry) insert) empty
+    fromList = foldl (flip . uncurry $ insert) empty
 
     toAscList :: t k a -> [(k, a)]
 
