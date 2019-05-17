@@ -36,13 +36,10 @@ class Map t where
     toAscList :: t k a -> [(k, a)]
 
     insert :: Ord k => k -> a -> t k a -> t k a
-    insert = insertWith (\_ v -> v)
+    insert = insertWith const
 
     insertWith :: Ord k => (a -> a -> a) -> k -> a -> t k a -> t k a
-    insertWith f k v = alter mf k
-        where
-            mf Nothing      = Just v
-            mf (Just old_v) = Just (f v old_v)
+    insertWith f k v = alter (Just . maybe v (f v)) k
 
     insertWithKey :: Ord k => (k -> a -> a -> a) -> k -> a -> t k a -> t k a
     insertWithKey f k = insertWith (f k) k
@@ -51,19 +48,13 @@ class Map t where
     delete = alter $ const Nothing
 
     adjust :: Ord k => (a -> a) -> k -> t k a -> t k a
-    adjust f = alter mf
-        where
-            mf Nothing  = Nothing
-            mf (Just v) = Just (f v)
+    adjust f = alter $ fmap f
 
     adjustWithKey :: Ord k => (k -> a -> a) -> k -> t k a -> t k a
     adjustWithKey f k = adjust (f k) k
 
     update :: Ord k => (a -> Maybe a) -> k -> t k a -> t k a
-    update f = alter mf
-        where
-            mf Nothing  = Nothing
-            mf (Just v) = f v
+    update f = alter $ maybe Nothing f
 
     updateWithKey :: Ord k => (k -> a -> Maybe a) -> k -> t k a -> t k a
     updateWithKey f k = update (f k) k
