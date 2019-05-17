@@ -4,7 +4,6 @@
   время в худшем случае.
 -}
 module NaiveTree where
-import Data.Maybe
 import Map
 
 {-|
@@ -28,7 +27,6 @@ data NaiveTree k a =
   что все ключи из @l@ строго меньше ключей из @r@.
 -}
 merge :: NaiveTree k a -> NaiveTree k a -> NaiveTree k a
-merge left Nil           = left
 merge Nil right          = right
 merge (Node k v ll rl) r = Node k v ll (merge rl r)
 
@@ -53,12 +51,14 @@ instance Map NaiveTree where
     toAscList Nil                   = []
     toAscList (Node k v left right) = toAscList left ++ [(k, v)] ++ toAscList right
 
-    alter f key Nil                          = let new_v = (f Nothing) in
-        if isNothing new_v then Nil else Node key (fromJust new_v) Nil Nil
-    alter f key (Node k v left right)  | key < k = Node k v (alter f key left) right
-    alter f key (Node k v left right)  | key > k = Node k v left (alter f key right)
-    alter f key (Node _ v left right)        = let new_v = (f $ Just v) in
-        if isNothing new_v then merge left right else Node key (fromJust new_v) left right
+    alter f key Nil                             = let v' = f Nothing in
+        case v' of Nothing -> Nil
+                   Just v  -> Node key v Nil Nil
+    alter f key (Node k v left right) | key < k = Node k v (alter f key left) right
+    alter f key (Node k v left right) | key > k = Node k v left (alter f key right)
+    alter f key (Node _ v left right)           = let v' = (f $ Just v) in
+        case v' of Nothing   -> merge left right
+                   Just val  -> Node key val left right
 
     lookup _ Nil                            = Nothing
     lookup key (Node k _ left _)  | key < k = Map.lookup key left
