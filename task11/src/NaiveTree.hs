@@ -53,7 +53,7 @@ instance Map NaiveTree where
 
     alter f k' Nil                     = let v' = f Nothing in
         case v' of Nothing  -> Nil
-                   Just val -> Node k' v Nil Nil
+                   Just val -> Node k' val Nil Nil
     alter f k' (Node k v l r) | k' < k = Node k v (alter f k' l) r
     alter f k' (Node k v l r) | k' > k = Node k v l (alter f k' r)
     alter f k' (Node _ v l r)          = let v' = (f $ Just v) in
