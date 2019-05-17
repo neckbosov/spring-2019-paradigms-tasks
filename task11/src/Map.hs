@@ -2,7 +2,7 @@
   Определение класса типов 'Map'.
 -}
 module Map where
-
+import Data.Maybe
 {-|
   Поведение всех определённых здесь функций должно быть аналогично
   поведению функций из модуля "Data.Map.Strict".
@@ -31,45 +31,54 @@ class Map t where
     singleton :: k -> a -> t k a
 
     fromList :: Ord k => [(k, a)] -> t k a
-    fromList = undefined {- insert -}
+    fromList = foldl ((flip . uncurry) insert) empty
 
     toAscList :: t k a -> [(k, a)]
 
     insert :: Ord k => k -> a -> t k a -> t k a
-    insert = undefined {- insertWith -}
+    insert = insertWith (\_ v -> v)
 
     insertWith :: Ord k => (a -> a -> a) -> k -> a -> t k a -> t k a
-    insertWith = undefined {- alter -}
+    insertWith f k v = alter mf k
+        where
+            mf Nothing      = Just v
+            mf (Just old_v) = Just (f v old_v)
 
     insertWithKey :: Ord k => (k -> a -> a -> a) -> k -> a -> t k a -> t k a
-    insertWithKey = undefined {- insertWith -}
+    insertWithKey f k = insertWith (f k) k
 
     delete :: Ord k => k -> t k a -> t k a
-    delete = undefined {- alter -}
+    delete = alter $ const Nothing
 
     adjust :: Ord k => (a -> a) -> k -> t k a -> t k a
-    adjust = undefined {- alter -}
+    adjust f = alter mf
+        where
+            mf Nothing  = Nothing
+            mf (Just v) = Just (f v)
 
     adjustWithKey :: Ord k => (k -> a -> a) -> k -> t k a -> t k a
-    adjustWithKey = undefined {- adjust -}
+    adjustWithKey f k = adjust (f k) k
 
     update :: Ord k => (a -> Maybe a) -> k -> t k a -> t k a
-    update = undefined {- alter -}
+    update f = alter mf
+        where
+            mf Nothing  = Nothing
+            mf (Just v) = f v
 
     updateWithKey :: Ord k => (k -> a -> Maybe a) -> k -> t k a -> t k a
-    updateWithKey = undefined {- update -}
+    updateWithKey f k = update (f k) k
 
     alter :: Ord k => (Maybe a -> Maybe a) -> k -> t k a -> t k a
 
     lookup :: Ord k => k -> t k a -> Maybe a
 
     member :: Ord k => k -> t k a -> Bool
-    member = undefined {- lookup -}
+    member k curmap = isJust $ Map.lookup k curmap
 
     notMember :: Ord k => k -> t k a -> Bool
-    notMember = undefined {- member -}
+    notMember k curmap = not $ member k curmap
 
     null :: t k a -> Bool
-    null = undefined {- size -}
+    null curmap = (size curmap) == 0
 
     size :: t k a -> Int
