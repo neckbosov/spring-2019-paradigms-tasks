@@ -64,10 +64,10 @@ class Map t where
     lookup :: Ord k => k -> t k a -> Maybe a
 
     member :: Ord k => k -> t k a -> Bool
-    member k curmap = isJust $ Map.lookup k curmap
+    member = curry $ isJust . uncurry Map.lookup
 
     notMember :: Ord k => k -> t k a -> Bool
-    notMember k curmap = not $ member k curmap
+    notMember = curry $ not . uncurry member
 
     null :: t k a -> Bool
     null curmap = size curmap == 0
