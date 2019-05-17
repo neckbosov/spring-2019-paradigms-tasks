@@ -4,6 +4,7 @@
   время в худшем случае.
 -}
 module NaiveTree where
+import Data.Maybe
 import Map
 
 {-|
@@ -27,7 +28,9 @@ data NaiveTree k a =
   что все ключи из @l@ строго меньше ключей из @r@.
 -}
 merge :: NaiveTree k a -> NaiveTree k a -> NaiveTree k a
-merge = undefined
+merge left Nil           = left
+merge Nil right          = right
+merge (Node k v ll rl) r = Node k v ll (merge rl r)
 
 {-|
   Реализация функций 'Map' для 'NaiveTree'.
@@ -43,16 +46,27 @@ merge = undefined
   Скорее всего, при реализации вам потребуется функция 'merge'.
 -}
 instance Map NaiveTree where
-    empty = undefined
+    empty = Nil
 
-    singleton = undefined
+    singleton k v = Node k v Nil Nil 
 
-    toAscList = undefined
+    toAscList Nil                   = []
+    toAscList (Node k v left right) = toAscList left ++ [(k, v)] ++ toAscList right
 
-    alter = undefined
+    alter f key Nil                          = let new_v = (f Nothing) in
+        if isNothing new_v then Nil else Node key (fromJust new_v) Nil Nil
+    alter f key (Node k v left right)  | key < k = Node k v (alter f key left) right
+    alter f key (Node k v left right)  | key > k = Node k v left (alter f key right)
+    alter f key (Node _ v left right)        = let new_v = (f $ Just v) in
+        if isNothing new_v then merge left right else Node key (fromJust new_v) left right
 
-    lookup = undefined
+    lookup _ Nil                            = Nothing
+    lookup key (Node k _ left _)  | key < k = Map.lookup key left
+    lookup key (Node k _ _ right) | key > k = Map.lookup key right
+    lookup _ (Node _ v _ _)                 = Just v
 
-    null = undefined
+    null Nil = True
+    null _   = False
 
-    size = undefined
+    size Nil = 0
+    size (Node _ _ left right) = size left + 1 + size right
