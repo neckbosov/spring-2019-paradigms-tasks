@@ -27,7 +27,7 @@ data NaiveTree k a =
   что все ключи из @l@ строго меньше ключей из @r@.
 -}
 merge :: NaiveTree k a -> NaiveTree k a -> NaiveTree k a
-merge Nil r              = r
+merge Nil              r = r
 merge (Node k v ll rl) r = Node k v ll (merge rl r)
 
 {-|
