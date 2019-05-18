@@ -69,7 +69,7 @@ mapTests name (_ :: Proxy m) =
             testCase "delete" $
                 let tr = delete 6 (insert 6 "a" empty) :: m Int String in do
                 Map.null tr                 @?= True
-                isNothing (Map.lookup 6 tr) @?= True
+                Map.lookup 6 tr @?= Nothing
             ,
             testCase "adjust" $
                 let tr = adjust ("b" ++) 6 (singleton 6 "a") :: m Int String in 
