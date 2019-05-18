@@ -34,15 +34,15 @@ mapTests name (_ :: Proxy m) =
             ,
             testCase "singleton" $
                 let tr = singleton 6 "a" :: m Int String in do
-                size tr @?= 1
-                member 6 tr @?= True
-                fromJust (Map.lookup 6 tr) @?= "a"
+                size tr         @?= 1
+                member 6 tr     @?= True
+                Map.lookup 6 tr @?= Just "a"
             ,
             testCase "fromList" $
                 let tr = fromList [(6, "a"), (6, "b")] :: m Int String in do
-                size tr @?= 1
-                member 6 tr @?= True
-                fromJust (Map.lookup 6 tr) @?= "b"
+                size tr         @?= 1
+                member 6 tr     @?= True
+                Map.lookup 6 tr @?= Just "b"
             ,
             testCase "toAscList . fromList sorts list" $
                 let tr = fromList [(2, "a"), (1, "b"), (3, "c"), (1, "x")] :: m Int String in
@@ -50,34 +50,34 @@ mapTests name (_ :: Proxy m) =
             ,
             testCase "insert" $
                 let tr = insert 6 "a" empty :: m Int String in do
-                size tr @?= 1
-                member 6 tr @?= True
-                fromJust (Map.lookup 6 tr) @?= "a"
+                size tr         @?= 1
+                member 6 tr     @?= True
+                Map.lookup 6 tr @?= Just "a"
             ,
             testCase "insertWith" $
                 let tr = insertWith (++) 6 "b" (singleton 6 "a") :: m Int String in do
-                size tr @?= 1
-                member 6 tr @?= True
-                fromJust (Map.lookup 6 tr) @?= "ba"
+                size tr         @?= 1
+                member 6 tr     @?= True
+                Map.lookup 6 tr @?= Just "ba"
             ,
             testCase "insertWithKey" $
                 let tr = insertWithKey (\k newV oldV -> show k ++ newV ++ oldV) 6 "b" (singleton 6 "a") :: m Int String in do
-                size tr @?= 1
-                member 6 tr @?= True
-                fromJust (Map.lookup 6 tr) @?= "6ba"
+                size tr         @?= 1
+                member 6 tr     @?= True
+                Map.lookup 6 tr @?= Just "6ba"
             ,
             testCase "delete" $
                 let tr = delete 6 (insert 6 "a" empty) :: m Int String in do
-                Map.null tr @?= True
+                Map.null tr                 @?= True
                 isNothing (Map.lookup 6 tr) @?= True
             ,
             testCase "adjust" $
                 let tr = adjust ("b" ++) 6 (singleton 6 "a") :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "ba"
+                Map.lookup 6 tr @?= Just "ba"
             ,
             testCase "adjustWithKey" $
                 let tr = adjustWithKey (\k v -> show k ++ v) 6 (singleton 6 "a") :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "6a"
+                Map.lookup 6 tr @?= Just "6a"
             ,
             testCase "update" $
                 let tr = update (const Nothing) 6 (singleton 6 "a") :: m Int String in 
@@ -85,15 +85,15 @@ mapTests name (_ :: Proxy m) =
             ,
             testCase "updateWithKey" $
                 let tr = updateWithKey (\k v -> Just $ show k ++ v) 6 (singleton 6 "a") :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "6a"
+                Map.lookup 6 tr @?= Just "6a"
             ,
             testCase "alter" $
-                let tr = alter (fmap $ (++) "b") 6 (singleton 6 "a") :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "ba"
+                let tr = alter (fmap ("b" ++)) 6 (singleton 6 "a") :: m Int String in 
+                Map.lookup 6 tr @?= Just "ba"
             ,
             testCase "lookup" $
                 let tr = singleton 6 "a" :: m Int String in 
-                fromJust (Map.lookup 6 tr) @?= "a"
+                Map.lookup 6 tr @?= Just "a"
             ,
             testCase "member" $
                 let tr = singleton 6 "a" :: m Int String in 
